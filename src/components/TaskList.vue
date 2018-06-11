@@ -1,23 +1,22 @@
 <template>
   <div id="taskList">
     <ul v-if="tasksLoaded">
-      <transition-group appear leave-active-class="animated fadeOut" enter-active-class="animated fadeIn">
+      <transition-group appear leave-active-class="animated fadeOut">
         <Task
-          v-for="(task,index) in tasks"
+          v-for="(task,index) in areEnoughInputs"
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
-          mode="out-in"
+          mode="in-out"
           v-if="!task.init"
-          :task="task"
+          :name="`taskInput${index}`"
+          :task="populateInputs(tasks, index)"
           :key="index"
           tag="li"
           ></Task>
       </transition-group>
     </ul>
     <div v-else>Loading</div>
-    <div v-for="task in inputs">
-      <input class="addingTask" :tag="`taskInput${task}`" type="text" style="{width: 100px}" @keydown.esc="event => {blur(event)}" @keydown.enter="event=>{addTask(event)}">
-    </div>
+
 
   </div>
 </template>
@@ -32,36 +31,65 @@
       taskTools,
       Task
     },
-    created(){
+    data(){
+      return {
+        generic: {
+          shortDesc: '',
+          description: 'No info',
+          completed: false,
+          id: '',
+          slot: ''
+        }
+      }
+    },
+    mounted(){
       this.$store.dispatch('fetchList');
     },
     methods:{
-      addTask(event){
-        if(event.target.value.length)
-        {
-          this.$store.dispatch('addTask', {
-            shortDesc: event.target.value,
-            description: 'No info',
-            completed: false,
-            id: new Date().getTime(),
-            slot: event.target.attributes.tag.value
-           });
-        }
-      },
       blur(event){
         event.target.value = '';
         event.target.blur();
+      },
+      populateInputs(tasks, ind){
+        var search;
+
+        if (tasks)
+        {
+          let arr = [];
+
+          Object.keys(tasks).forEach(task => {arr.push(tasks[task])});
+
+          search = arr.find((task) => {
+            return task.slot === 'taskInput' + ind;
+          });
+        }
+
+        return search || this.generic;
       }
     },
     computed:{
       inputs(){
-        return 10 - Object.keys(this.$store.getters.tasks).length-1;
+        return 15 - this.tasksAmount;
+      },
+      tasksAmount(){
+        return Object.keys(this.$store.getters.tasks).length+1;
       },
       tasks(){
-          return this.$store.getters.tasks;
+          let tasks = this.$store.getters.tasks;
+
+          return tasks;
       },
       tasksLoaded(){
         return this.$store.getters.tasksLoaded;
+      },
+      areEnoughInputs(){
+        if (this.tasksAmount >= 17)
+        {
+          return this.tasksAmount-1;
+        }
+        else{
+          return 15;
+        }
       }
     }
   }
@@ -77,18 +105,6 @@
 .v-enter-to{
   animation-duration: .5s;
 }
-
-.addingTask{
-  border:0;
-  border-bottom: 1px solid rgba(0,0,0,0.3);
-}
-
-.addingTask:focus{
-  background-color: rgba(255,64,32,0.3);
-  outline: none;
-}
-
-
 
 </style>
 

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import firebaseConfig from '../firebaseConfig'
 import store from './store'
+import firebase from 'firebase'
 
 var ax = axios.create({
   baseURL: 'https://www.googleapis.com/identitytoolkit/v3/relyingparty'
@@ -9,6 +10,7 @@ var ax = axios.create({
 const state = {
   user: {
     userId: '',
+    email: '',
     loggedIn: false,
     idToken: ''
   },
@@ -34,6 +36,10 @@ const mutations = {
       localStorage.setItem('refreshToken',  auth.refreshToken);
       localStorage.setItem('userId', state.user.userId);
     }
+
+    state.user.email = localStorage.getItem('user');
+
+    console.log(state.user);
   },
   'LOGOUT'(state){
     state.user.loggedIn = false;
@@ -51,6 +57,7 @@ const actions = {
 
     ax.post(requestTarget, formData)
       .then(resp => {
+        localStorage.setItem('user', user.email);
         commit('authUser', resp);
       })
       .catch(error => {loginFail(state,error)});
@@ -61,6 +68,7 @@ const actions = {
 
     ax.post(requestTarget, formData)
       .then(resp => {
+        localStorage.setItem('user', user.email);
         commit('authUser', resp);
       })
       .catch(error => {loginFail(state,error)});

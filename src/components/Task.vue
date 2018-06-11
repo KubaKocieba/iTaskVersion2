@@ -1,19 +1,22 @@
 <template>
   <div>
     <span>
-      <span v-if="!edit" @click="edit = !edit">{{task.shortDesc}}</span>
-      <span v-else>
-        <input
-          autofocus
+      <input class="addingTask"
+          @click="edit = !edit"
+          :placeholder="task.shortDesc"
           onfocus="this.select()"
           v-model="editTask.shortDesc"
-          @keydown.enter="updateTask"
-          @keydown.esc="edit = !edit;editTask.shortDesc = task.shortDesc;"
-          />
-          <button @click="updateTask">OK</button>
+          @keydown.enter="event => {task.id ? updateTask() : addTask(event)}"
+          @keydown.esc="event => {edit = !edit;editTask.shortDesc = task.shortDesc;blurInput(event)}"
+          :id="name"
+        />
       </span>
-      <button @click="details = !details">>></button>
-      <button @click="removeTask">Throw out</button>
+
+        <span>
+          <button v-if="task.id" @click="details = !details">>></button>
+          <button v-if="task.id" @click="removeTask">Throw out</button>
+        </span>
+
       <transition name="detailsAppear" mode="out-in" type="animation">
       <div class="tDetails" v-if="details">
         <div>{{ task.completed }}</div>
@@ -35,7 +38,7 @@
 
 <script>
   export default {
-    props: ['task'],
+    props: ['task', 'name'],
     data(){
       return {
         edit: false,
@@ -46,11 +49,23 @@
         }
       }
     },
-    created(){
-      console.log(...this.task);
-    },
     methods: {
+      addTask(event){
+        if(event.target.value.length)
+        {
+          var newTaskObj = {
+            shortDesc: event.target.value,
+            description: 'No info',
+            completed: false,
+            id: new Date().getTime(),
+            slot: event.target.attributes.id.value
+           };
+
+          this.$store.dispatch('addTask', newTaskObj);
+        }
+      },
       removeTask(){
+        this.editTask = {};
         this.$store.dispatch('removeTask',this.task.id);
       },
       updateTask(){
@@ -81,6 +96,9 @@
       },
       exitEditDesc(){
         this.descEdit = !this.descEdit;
+      },
+      blurInput(event){
+        event.target.blur();
       }
     }
   }
@@ -144,5 +162,15 @@
       transform: translateY(-50px);
     }
   }
+
+  .addingTask{
+  border:0;
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+
+.addingTask:focus{
+  background-color: rgba(255,64,32,0.3);
+  outline: none;
+}
 
 </style>

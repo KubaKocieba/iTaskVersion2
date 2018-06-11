@@ -58,16 +58,30 @@ const mutations = {
   'ADD_TASK'(state, task){
     var userId = store.getters.user.userId;
 
+    console.log(task);
+
     db.post('users/' + userId + '/tasks.json?auth=' + store.getters.user.idToken, task)
       .then(resp=>{
+        let nextSlot = 'taskInput' + (Number(task.slot.split('taskInput')[1]) + 1),
+            nextInput = document.getElementById(nextSlot);
+
         Vue.set(state.tasks, resp.data.name, task);
-      /*store.dispatch('fetchList');*/
+
+        if (nextInput){
+          nextInput.focus();
+        }
+        else{
+          document.getElementById(task.slot).blur();
+        }
+
+        /*store.dispatch('fetchList');*/
     });
 
   },
   'CLEAR_LIST'(state){
     state.tasks = {};
-    var userId = store.getters.user.userId;
+    var userId = store.getters.user.userId,
+        taskInputs = document.getElementsByClassName('addingTask');
 
     db.delete('users/' + userId + '/tasks.json?auth=' + store.getters.user.idToken);
   },
@@ -80,7 +94,7 @@ const mutations = {
       if(!listObj[task]['init'] && listObj[task]['id'] === id)
       {
         db.delete('users/' + userId + '/tasks/' + task + '.json?auth=' + store.getters.user.idToken)
-          .then(()=> {/*store.dispatch('fetchList');*/})
+          .then(()=> {})
           .catch(error=>console.log(error));
 
         Vue.delete(state.tasks, task);

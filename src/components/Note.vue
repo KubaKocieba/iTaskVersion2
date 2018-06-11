@@ -2,7 +2,7 @@
   <div id="note">
     <app-heading></app-heading>
     <app-task-list></app-task-list>
-    <app-task-add-footer></app-task-add-footer>
+<!--     <app-task-add-footer></app-task-add-footer> -->
   </div>
 </template>
 
@@ -15,7 +15,6 @@
     components:{
       appHeading: Heading,
       appTaskList: TaskList,
-      appTaskAddFooter: Footer
     },
     methods:{
 
