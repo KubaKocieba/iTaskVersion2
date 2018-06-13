@@ -21,3 +21,16 @@
     }
   }
 </script>
+
+<style scoped>
+
+#note
+{
+  height: 90vh;
+  background-color: #f5f037;
+  position: relative;
+  opacity: 0.9;
+  border-bottom-right-radius: 15px;
+}
+
+</style>

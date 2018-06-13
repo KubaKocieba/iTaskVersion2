@@ -69,7 +69,7 @@
     },
     computed:{
       inputs(){
-        return 15 - this.tasksAmount;
+        return 11 - this.tasksAmount;
       },
       tasksAmount(){
         return Object.keys(this.$store.getters.tasks).length+1;
@@ -83,12 +83,15 @@
         return this.$store.getters.tasksLoaded;
       },
       areEnoughInputs(){
-        if (this.tasksAmount >= 17)
+        if (this.tasksAmount >= 14)
         {
-          return this.tasksAmount-1;
+          setTimeout(function(){
+            document.querySelectorAll('.addingTask')[document.querySelectorAll('.addingTask').length-1].focus()}
+            , 0);
+          return this.tasksAmount-2;
         }
         else{
-          return 15;
+          return 11;
         }
       }
     }

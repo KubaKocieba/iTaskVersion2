@@ -3,6 +3,7 @@
     <span>
       <input class="addingTask"
           @click="edit = !edit"
+          :class="{completed : task.completed}"
           :placeholder="task.shortDesc"
           onfocus="this.select()"
           v-model="editTask.shortDesc"
@@ -13,21 +14,27 @@
       </span>
 
         <span>
-          <button v-if="task.id" @click="details = !details">>></button>
-          <button v-if="task.id" @click="removeTask">Throw out</button>
+          <button class="showDetailsBtn" v-if="task.id" @click="details = !details">>></button>
         </span>
 
       <transition name="detailsAppear" mode="out-in" type="animation">
-      <div class="tDetails" v-if="details">
-        <div>{{ task.completed }}</div>
-        <div>
-          <span v-if="!descEdit" @click="editDescription">{{ task.description }}</span>
-          <span v-else>
-            <textarea
-              v-model="editTask.description"
-              @keydown.esc="exitEditDesc"
-              @keydown.enter="updateTask"
-            ></textarea></span>
+      <div class="tDetails" v-if="details && task.id">
+        <div class="leftCol">
+<!--           <div>{{  }}</div> -->
+          <div>
+            <span v-if="!descEdit" @click="editDescription">{{ task.description }}</span>
+            <span v-else>
+              <textarea
+                class="taskDetailsInfo"
+                v-model="editTask.description"
+                @keydown.esc="exitEditDesc"
+                @keydown.enter="updateTask"
+              ></textarea></span>
+          </div>
+        </div>
+        <div class="rightCol">
+          <button title="Click to change status" class="changeStatus" :class="{un: task.completed}" v-if="task.id" @click="changeStatus"></button>
+          <button title="Remove the task" class="removeTask" v-if="task.id" @click="removeTask"></button>
         </div>
       </div>
     </transition>
@@ -71,7 +78,7 @@
       updateTask(){
         let edited = this.editTask;
 
-        Object.keys(edited).forEach(key=>{
+        Object.keys(edited).forEach(key =>{
           if (edited[key] !== this.task[key]){
             this.$store.dispatch('updateTask',
               {
@@ -99,6 +106,10 @@
       },
       blurInput(event){
         event.target.blur();
+      },
+      changeStatus(){
+       this.editTask.completed = !this.editTask.completed;
+       this.updateTask();
       }
     }
   }
@@ -164,13 +175,65 @@
   }
 
   .addingTask{
-  border:0;
-  border-bottom: 1px solid rgba(0,0,0,0.3);
-}
+    width: 70vw;
+    font-size: 2vh;
+    margin-bottom: 2vh;
+    margin-top: 2vh;
+    background: none;
+    border:0;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+  }
 
-.addingTask:focus{
-  background-color: rgba(255,64,32,0.3);
-  outline: none;
-}
+  .addingTask:focus{
+    background-color: rgba(255,64,32,0.3);
+    outline: none;
+  }
+
+  .tDetails{
+    display: grid;
+    grid-template-columns: 55vw 15vw;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .removeTask,
+  .changeStatus
+  {
+    border: 0;
+    width: 5vw;
+    height: 5vw;
+  }
+  .removeTask{
+
+    background: no-repeat center / 70% 70% url("../images/erase.png");
+  }
+
+  .taskDetailsInfo{
+    resize: none;
+    width: 70%;
+    height: 6vh;
+    border-radius: 8px;
+    background-color: #e6e471;
+  }
+
+  .showDetailsBtn{
+    border: 0;
+    background: none;
+    font-weight: bolder
+  }
+
+  .completed{
+    color: #2b9e08;
+  }
+
+  .changeStatus
+  {
+    outline: none;
+    background: no-repeat center/ contain url('../images/check.png');
+  }
+
+  .changeStatus.un{
+    background-image: url('../images/uncheck.png');
+  }
 
 </style>
