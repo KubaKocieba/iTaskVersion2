@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="filter === null || task.completed === filter">
     <span>
       <input class="addingTask"
           @click="edit = !edit"
@@ -44,7 +44,7 @@
 
 <script>
   export default {
-    props: ['task', 'name'],
+    props: ['task', 'name', 'filter'],
     data(){
       return {
         edit: false,

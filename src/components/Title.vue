@@ -1,22 +1,13 @@
 <template>
   <div class="appTitle">
       <h1>iTask</h1>
-      <div id="filters">
-        Filter tasks by
-        <span @click="status = 'completed'">Completed</span>
-        <span @click="status = 'incompleted'">Incompleted</span>
-      </div>
   </div>
 </template>
 
 
 <script>
 export default{
-  data(){
-    return {
-      status: false
-    }
-  }
+
 }
 
 </script>

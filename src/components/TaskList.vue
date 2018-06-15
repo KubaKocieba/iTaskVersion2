@@ -1,5 +1,13 @@
 <template>
   <div id="taskList">
+    <small>
+      <div class="filters">
+      <label for="filters"> Filter by
+      <select  v-if="tasksLoaded && tasks" v-model="status">
+        <option v-for="option in filterOptions" :value="option.value" @click="status = option.value">{{option.text}}</option>
+      </select></label>
+    </div>
+    </small>
     <ul v-if="tasksLoaded">
       <transition-group appear leave-active-class="animated fadeOut">
         <Task
@@ -11,6 +19,7 @@
           :name="`taskInput${index}`"
           :task="populateInputs(tasks, index)"
           :key="index"
+          :filter="status"
           tag="li"
           ></Task>
       </transition-group>
@@ -25,7 +34,6 @@
 
   import taskTools from './taskTools'
   import Task from './Task'
-  import obj from './Title'
 
   export default {
     components:{
@@ -33,16 +41,21 @@
       Task
     },
     data(){
-      return {
+      return ({
         generic: {
           shortDesc: '',
           description: 'No info',
-          completed: false,
+          completed: null,
           id: '',
           slot: ''
         },
-        status: false
-      }
+        status: null,
+        filterOptions: [
+          { text: 'Completed', value: true },
+          { text: 'Inompleted', value: false },
+          { text: 'Clear filter', value: null }
+        ]
+      });
     },
     mounted(){
       console.log('zamontowano i fetchujemy listę');
@@ -123,6 +136,43 @@
 
 #taskList{
   overflow-y: scroll;
+}
+
+.filters{
+  position: absolute;
+  top: 1vh;
+  right: 3vw;
+  color: white;
+  z-index: 32000;
+}
+
+.filters select{
+  background: rgba(255,255,255,0.4);
+  border-radius: 8px;
+  color: white;
+  width: 35vw;
+}
+
+.filters select:focus{
+  color: black;
+  outline: none;
+}
+
+.filters select:not(:focus){
+  color: white;
+}
+
+
+.statusChange{
+  padding: 0 1vw;
+}
+
+.statusChange:hover{
+  border: 1px solid white;
+  margin: 0 -1px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
 </style>
