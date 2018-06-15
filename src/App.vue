@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <app-title v-if="loggedIn"></app-title>
     <app-note v-if="loggedIn" />
     <app-login v-else-if="!checkStorage()"/>
   </div>
@@ -8,12 +9,14 @@
 <script>
 import Note from './components/Note'
 import Login from './components/Login'
+import Title from './components/Title'
 
 export default {
   name: 'App',
   components: {
     appLogin: Login,
-    appNote: Note
+    appNote: Note,
+    appTitle: Title
   },
   computed: {
     loggedIn(){
@@ -48,23 +51,40 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  display: grid;
+  grid-template-rows: 8vh 90vh;
+  grid-row-gap: 1vh;
 }
 
-body {
+@font-face
+{
+  font-family: purisa;
+  src: url("./font/Purisa.ttf");
+}
+body * {
+  font-family: purisa;
+  src: url("./font/Purisa.ttf");
+}
+
+body
+{
   background: url("./images/desk.jpg");
-  background-size: cover; }
-  body::after {
-    display: block;
-    content: "";
-    opacity: 0.2;
-    background: white;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
+  background-size: cover;
+  margin: 0;
+}
+
+body::after
+{
+  display: block;
+  content: "";
+  opacity: 0.2;
+  background: white;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
 
 </style>

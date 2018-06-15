@@ -1,7 +1,14 @@
 <template>
   <div id="noteHead">
-    <span><h1>iTask</h1>
-      <h4>{{user}}<button @click="logout"></button></h4>
+      <h3 id="dateDiv"><small>{{date}}</small></h3>
+      <h4 id="clockDiv">
+        <button id="clockImg" @click="toggleClock" title="Toggle clock"></button>
+        <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+          <span id="clock" v-show="showClock">{{ clock }}
+          </span>
+        </transition>
+      </h4>
+      <h5>{{ user }}<button @click="logout" title="Logout"></button></h5>
       <button title="Cleart the task list" id="clearList" @click="removeAll" >X</button>
     </span>
   </div>
@@ -11,14 +18,42 @@
   import {mapActions} from 'vuex'
 
   export default {
+    created(){
+      setInterval( () => {this.time = new Date()},1000)
+    },
     data(){
       return {
-        actualDate: 0
+        actualDate: new Date(),
+        time: new Date(),
+        showClock: true
       }
     },
     computed: {
       user(){
         return this.$store.getters.user.email;
+      },
+      clock(){
+        let h = this.time.getHours().toString(),
+            m = this.time.getMinutes().toString(),
+            s = this.time.getSeconds().toString();
+
+        h = h.length === 1 ? ("0" + h) : h;
+        m = m.length === 1 ? ("0" + m) : m;
+        s = s.length === 1 ? ("0" + s) : s;
+
+        return `${h} : ${m} : ${s}`;
+      },
+      date(){
+        let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            day = days[this.actualDate.getDay()],
+            m = (this.actualDate.getMonth()+1).toString(),
+            d = this.actualDate.getDate().toString(),
+            y = this.actualDate.getFullYear().toString();
+
+        m = m.length === 1 ? ("0" + m) : m;
+        d = d.length === 1 ? ("0" + d) : d;
+
+        return `${day} ${d} / ${m} / ${y}`;
       }
     },
     methods:{
@@ -31,6 +66,9 @@
       },
       logoutUser(){
         this.logout();
+      },
+      toggleClock(){
+        this.showClock = !this.showClock;
       }
     }
   }
@@ -38,25 +76,22 @@
 
 <style scoped>
   #noteHead {
-/*    display: grid;
-    grid-template-columns: 2fr 2fr;*/
-    align-content: center;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    height: 15%;
+    background-color: rgba(255, 255, 255, 1);
     font-size: 2vh;
-    grid-column-gap: 20vw;
-    opacity: 1;
   }
 
-  h4{
+  h5{
+    position: absolute;
+    right: 5%;
+    top: 12%;
     justify-content: center;
     display: grid;
     grid-template-columns: minmax(30vw, 30vh) 3vw;
     text-align:center;
   }
 
-  h4 button{
+  h5 button{
     align-self: center;
     border: 0;
     background: center / contain no-repeat url('../images/logout.png') ;
@@ -65,23 +100,51 @@
     opacity: 0.4;
   }
 
-  h4 button:hover{
+  h5 button:hover{
     opacity: 1;
     cursor: pointer;
   }
 
-  #clearList{
-    font-size: 2.5vh;
+  #dateDiv{
     position: absolute;
-    right: 3%;
-    bottom: 3%;
-    border: 0;
+    top: 8%;
+    left: 5%;
+  }
+
+  #clockDiv{
+    position: absolute;
+    left: 5%;
+    top: 12%;
+  }
+
+  #clockImg{
+    border:0;
+    height: 2vh;
+    width: 2vh;
+    background: center / contain no-repeat url('../images/clock.png') ;
+    outline: 0;
+  }
+
+  #clock{
+    margin-left: 2vw;
+  }
+
+  #clearList{
+    font-size: 2vh;
+    position: absolute;
+    right: 3.5%;
+    bottom: 1.5%;
+    border: 1px solid black;
+    border-radius: 50%;
     background: none;
+    width: 4vh;
+    height: 4vh;
   }
 
   #clearList:hover{
     color: red;
     cursor: pointer;
+    border: 1px solid red;
   }
 
 

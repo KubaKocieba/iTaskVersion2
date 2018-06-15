@@ -38,8 +38,6 @@ const mutations = {
     }
 
     state.user.email = localStorage.getItem('user');
-
-    console.log(state.user);
   },
   'LOGOUT'(state){
     state.user.loggedIn = false;

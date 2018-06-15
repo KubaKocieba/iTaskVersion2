@@ -3,7 +3,7 @@
     <ul v-if="tasksLoaded">
       <transition-group appear leave-active-class="animated fadeOut">
         <Task
-          v-for="(task,index) in areEnoughInputs"
+          v-for="(task, index) in areEnoughInputs"
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
           mode="in-out"
@@ -15,7 +15,7 @@
           ></Task>
       </transition-group>
     </ul>
-    <div v-else>Loading</div>
+    <div v-else id="loading">Loading</div>
 
 
   </div>
@@ -25,6 +25,7 @@
 
   import taskTools from './taskTools'
   import Task from './Task'
+  import obj from './Title'
 
   export default {
     components:{
@@ -39,10 +40,12 @@
           completed: false,
           id: '',
           slot: ''
-        }
+        },
+        status: false
       }
     },
     mounted(){
+      console.log('zamontowano i fetchujemy listę');
       this.$store.dispatch('fetchList');
     },
     methods:{
@@ -57,7 +60,9 @@
         {
           let arr = [];
 
-          Object.keys(tasks).forEach(task => {arr.push(tasks[task])});
+          Object.keys(tasks).forEach(task => {
+            arr.push(tasks[task]);
+          });
 
           search = arr.find((task) => {
             return task.slot === 'taskInput' + ind;
@@ -72,26 +77,27 @@
         return 11 - this.tasksAmount;
       },
       tasksAmount(){
-        return Object.keys(this.$store.getters.tasks).length+1;
+        return Object.keys(this.$store.getters.tasks).length + 1;
       },
       tasks(){
-          let tasks = this.$store.getters.tasks;
+        let tasks = this.$store.getters.tasks;
 
-          return tasks;
+        return tasks;
       },
       tasksLoaded(){
         return this.$store.getters.tasksLoaded;
       },
       areEnoughInputs(){
-        if (this.tasksAmount >= 14)
+        if (this.tasksAmount >= 11)
         {
           setTimeout(function(){
             document.querySelectorAll('.addingTask')[document.querySelectorAll('.addingTask').length-1].focus()}
             , 0);
-          return this.tasksAmount-2;
+
+          return this.tasksAmount-1;
         }
         else{
-          return 11;
+          return 10;
         }
       }
     }
@@ -107,6 +113,16 @@
 .v-leave-to,
 .v-enter-to{
   animation-duration: .5s;
+}
+
+#loading{
+  color: black;
+  margin-top: 5vh;
+  font-size: 2.5em;
+}
+
+#taskList{
+  overflow-y: scroll;
 }
 
 </style>

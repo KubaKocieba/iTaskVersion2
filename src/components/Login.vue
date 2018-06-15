@@ -79,6 +79,7 @@ export default {
     background: #000;
     position: fixed;
     top: 0;
+    left: 0;
     display: block;
     color: #fff;
     width: 100%;

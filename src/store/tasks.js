@@ -58,8 +58,6 @@ const mutations = {
   'ADD_TASK'(state, task){
     var userId = store.getters.user.userId;
 
-    console.log(task);
-
     db.post('users/' + userId + '/tasks.json?auth=' + store.getters.user.idToken, task)
       .then(resp=>{
         let nextSlot = 'taskInput' + (Number(task.slot.split('taskInput')[1]) + 1),
@@ -74,7 +72,7 @@ const mutations = {
           document.getElementById(task.slot).blur();
         }
 
-        /*store.dispatch('fetchList');*/
+        //store.dispatch('fetchList');
     });
 
   },

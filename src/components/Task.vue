@@ -14,13 +14,12 @@
       </span>
 
         <span>
-          <button class="showDetailsBtn" v-if="task.id" @click="details = !details">>></button>
+          <button class="showDetailsBtn" v-if="task.id" @click="details = !details" title="Details">>></button>
         </span>
 
       <transition name="detailsAppear" mode="out-in" type="animation">
       <div class="tDetails" v-if="details && task.id">
         <div class="leftCol">
-<!--           <div>{{  }}</div> -->
           <div>
             <span v-if="!descEdit" @click="editDescription">{{ task.description }}</span>
             <span v-else>
@@ -50,9 +49,16 @@
       return {
         edit: false,
         descEdit: false,
-        details: false,
-        editTask: {
-          ...this.task
+        details: false
+      }
+    },
+    computed: {
+      editTask:{
+        get(){
+          return {...this.task};
+        },
+        set(newValue){
+          return {...newValue};
         }
       }
     },
@@ -71,7 +77,13 @@
           this.$store.dispatch('addTask', newTaskObj);
         }
       },
+      resetInputParams(){
+        this.edit = false;
+        this.descEdit = false;
+        this.details = false;
+      },
       removeTask(){
+        this.resetInputParams();
         this.editTask = {};
         this.$store.dispatch('removeTask',this.task.id);
       },
@@ -108,8 +120,8 @@
         event.target.blur();
       },
       changeStatus(){
-       this.editTask.completed = !this.editTask.completed;
-       this.updateTask();
+        this.editTask.completed = !this.editTask.completed;
+        this.updateTask();
       }
     }
   }
@@ -178,7 +190,7 @@
     width: 70vw;
     font-size: 2vh;
     margin-bottom: 2vh;
-    margin-top: 2vh;
+    margin-top: 1.8vh;
     background: none;
     border:0;
     border-bottom: 1px solid rgba(0,0,0,0.3);
@@ -234,6 +246,18 @@
 
   .changeStatus.un{
     background-image: url('../images/uncheck.png');
+  }
+
+  .showDetailsBtn{
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 0.6em;
+    outline: 0;
+  }
+
+  .showDetailsBtn:hover{
+    background-color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
   }
 
 </style>
