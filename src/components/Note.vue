@@ -1,7 +1,13 @@
 <template>
   <div id="note">
     <app-heading></app-heading>
-    <app-task-list></app-task-list>
+    <div id="tabsSection">
+      <div id="addTab" @click="newTab">+</div>
+      <div id="tabs">
+        <app-task-tab v-for="(tab, index) in allTabs" :name="tab.name" :key="index"></app-task-tab>
+      </div>
+    </div>
+    <app-task-list :taskListTab="activeTab"></app-task-list>
   </div>
 </template>
 
@@ -9,14 +15,34 @@
   import Heading from './Heading'
   import TaskList from './TaskList'
   import Footer from './Footer'
+  import TaskTab from './taskTab'
 
   export default {
     components:{
       appHeading: Heading,
       appTaskList: TaskList,
+      appTaskTab: TaskTab
+    },
+    data(){
+      return {
+        activeTab: localStorage.getItem('activeTab') || 0,
+        tabs: [{
+          name: 'First list'
+         }]
+      }
+    },
+    computed: {
+      allTabs(){
+        console.log(this.tabs.length);
+        return this.tabs;
+      }
     },
     methods:{
-
+      newTab(){
+        this.tabs.push({
+          name: 'New tab'
+        })
+      }
     }
   }
 </script>
@@ -31,7 +57,7 @@
   width: 95%;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: 10% 90%;
+  grid-template-rows: 10% 3% 87%;
 }
 
 ::-webkit-scrollbar{
@@ -50,6 +76,31 @@
   background-position: -15px 0;
   height: 10px;
   width: 10px;
+}
+
+#tabsSection{
+  background-color: white;
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+  border-bottom: 0.5px solid black;
+  justify-self: stretch;
+}
+
+#tabs{
+  overflow-y: scroll;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px,150px));
+  background-color: white;
+  justify-items: stretch;
+  justify-content: start;
+}
+
+#addTab
+{
+  font-weight: bolder;
+  background-color: #dedbdb;
+  border-top-right-radius: 20px;
+  cursor: pointer;
 }
 
 /*::-webkit-scrollbar-button:increment{

@@ -26,26 +26,46 @@ const mutations = {
     state.tasks = {};
     state.loaded = false;
   },
-  receiveList(state){
+  newTab(state, tab){
+    var userId = store.getters.user.userId,
+        tabInit = {
+                name: tab,
+                tasks: [{init:true}]
+              };
+
+    console.log(tab);
+
+    db.post('users/' + userId + '/tabs.json?auth=' + store.getters.user.idToken, tabInit)
+      .then(resp=>{ console.log(resp);});
+  },
+  receiveList(state, tab){
     var userId = store.getters.user.userId;
 
     db.get('users/' + userId + '.json?auth=' + store.getters.user.idToken)
       .then(resp =>{
+        console.log(resp);
 
         if(!resp.data)
         {
-          db.put('users/' + userId + '.json?auth=' + store.getters.user.idToken, {tasks: [{init:true}]}).then(msg => console.log('success'));
+          db.put('users/' + userId + '.json?auth=' + store.getters.user.idToken,
+            {
+              tabs: [
+              {
+                name:'First list',
+                tasks: [{init:true}]
+              }]
+            }).then(msg => console.log('success'));
 
           state.loaded = true;
         }
         else
         {
-          db.get('users/' + userId + '.json?auth=' + store.getters.user.idToken)
+          db.get('users/' + userId +'/' + tab + '.json?auth=' + store.getters.user.idToken)
             .then(resp => {
               let listObj = resp.data.tasks,
                   init;
 
-              ({init, ...state.tasks} = listObj);
+              ({name, ...state.tasks} = listObj);
 
               state.loaded = true;
             });
@@ -65,12 +85,8 @@ const mutations = {
 
         Vue.set(state.tasks, resp.data.name, task);
 
-        if (nextInput){
-          nextInput.focus();
-        }
-        else{
-          document.getElementById(task.slot).blur();
-        }
+        document.getElementById(task.slot).blur();
+
 
         //store.dispatch('fetchList');
     });
@@ -130,11 +146,14 @@ const actions = {
   updateTask({commit}, {...payload}){
     commit('UPDATE_TASK', payload);
   },
-  fetchList({commit}) {
-    commit('receiveList');
+  fetchList({commit}, tab) {
+    commit('receiveList', tab);
   },
   clearStore({commit}){
     commit('resetData');
+  },
+  createNewTab({commit}, tab){
+    commit('newTab', tab);
   }
 };
 

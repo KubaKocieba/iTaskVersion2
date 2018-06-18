@@ -8,7 +8,7 @@
       </select></label>
     </div>
     </small>
-    <ul v-if="tasksLoaded">
+    <div id="list" v-if="tasksLoaded">
       <transition-group appear leave-active-class="animated fadeOut">
         <Task
           v-for="(task, index) in areEnoughInputs"
@@ -20,10 +20,10 @@
           :task="populateInputs(tasks, index)"
           :key="index"
           :filter="status"
-          tag="li"
+          tag="div"
           ></Task>
       </transition-group>
-    </ul>
+    </div>
     <div v-else id="loading">Loading</div>
 
 
@@ -40,6 +40,7 @@
       taskTools,
       Task
     },
+    props: ['taskListTab'],
     data(){
       return ({
         generic: {
@@ -47,7 +48,8 @@
           description: 'No info',
           completed: null,
           id: '',
-          slot: ''
+          slot: '',
+          listTab: this.taskListTab
         },
         status: null,
         filterOptions: [
@@ -58,8 +60,7 @@
       });
     },
     mounted(){
-      console.log('zamontowano i fetchujemy listę');
-      this.$store.dispatch('fetchList');
+      this.$store.dispatch('fetchList', this.taskListTab);
     },
     methods:{
       blur(event){
@@ -101,15 +102,18 @@
         return this.$store.getters.tasksLoaded;
       },
       areEnoughInputs(){
-        if (this.tasksAmount >= 11)
+        if (this.tasksAmount >= 12)
         {
-          setTimeout(function(){
-            document.querySelectorAll('.addingTask')[document.querySelectorAll('.addingTask').length-1].focus()}
-            , 0);
+          setTimeout(()=> {
+            document.getElementById('taskInput10').focus();
+            document.getElementById('taskInput10').blur();
+          },0);
 
           return this.tasksAmount-1;
         }
         else{
+
+
           return 10;
         }
       }
@@ -173,6 +177,26 @@
   border-radius: 8px;
   box-sizing: border-box;
   cursor: pointer;
+}
+
+#list{
+  -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    -webkit-padding-start: 0;
+}
+
+@media screen and (min-width: 1100px)
+{
+  #list span
+  {
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    grid-gap: 2vw;
+  }
 }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="filter === null || task.completed === filter">
+  <div class="taskDiv" v-show="filter === null || task.completed === filter">
     <span>
       <input class="addingTask"
           @click="edit = !edit"
@@ -20,16 +20,13 @@
       <transition name="detailsAppear" mode="out-in" type="animation">
       <div class="tDetails" v-if="details && task.id">
         <div class="leftCol">
-          <div>
             <span v-if="!descEdit" @click="editDescription">{{ task.description }}</span>
-            <span v-else>
-              <textarea
+            <textarea v-else
                 class="taskDetailsInfo"
                 v-model="editTask.description"
                 @keydown.esc="exitEditDesc"
                 @keydown.enter="updateTask"
-              ></textarea></span>
-          </div>
+            ></textarea>
         </div>
         <div class="rightCol">
           <button title="Click to change status" class="changeStatus" :class="{un: task.completed}" v-if="task.id" @click="changeStatus"></button>
@@ -216,7 +213,6 @@
     height: 5vw;
   }
   .removeTask{
-
     background: no-repeat center / 70% 70% url("../images/erase.png");
   }
 
@@ -258,6 +254,36 @@
   .showDetailsBtn:hover{
     background-color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
+  }
+
+    @media screen and (min-width: 1100px)
+  {
+    .addingTask{
+      width: 70%;
+    }
+
+   .tDetails{
+    margin: 0 5vw 0 12vw;
+    grid-template-columns: 4fr 2fr;
+    grid-column-gap: 2vw;
+    justify-items: stretch;
+    align-items: stretch;
+   }
+
+    .removeTask{
+      background-size: 35% 35%;
+    }
+
+    .changeStatus{
+      background-size: 65% 30%;
+    }
+
+    .taskDetailsInfo
+    {
+      width: 100%;
+      height: 100%;
+    }
+
   }
 
 </style>
