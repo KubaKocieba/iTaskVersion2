@@ -55,11 +55,17 @@
       closeTab(){
         let vm = this;
 
-        this.$store.dispatch('deleteTab', {name: this.tab, key: this.tabKey, tabToEmit: vm});
+        if (Object.keys(this.$store.getters.tabs).length > 1)
+        {
+          this.$store.dispatch('deleteTab', {name: this.tab, key: this.tabKey, tabToEmit: vm});
+        }
       },
       displayTab(){
-        this.$store.dispatch('fetchList', this.tabKey);
-        this.$emit('makeActive', this.tabKey);
+        if(!this.isItActive)
+        {
+          this.$store.dispatch('fetchList', this.tabKey);
+          this.$emit('makeActive', this.tabKey);
+        }
       }
     }
   }
