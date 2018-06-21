@@ -4,7 +4,7 @@
     <div id="tabsSection">
       <div id="addTab" @click="newTab">+</div>
       <div id="tabs">
-        <app-task-tab v-for="(tab, index) in allTabs" :name="tab.name" :key="index"></app-task-tab>
+        <app-task-tab v-for="(tab, tabKey) in allTabs" :name="tab.name" :key="tabKey" :tabKey="tabKey" @makeActive="activateTab" :isActive="activeTab"></app-task-tab>
       </div>
     </div>
     <app-task-list :taskListTab="activeTab"></app-task-list>
@@ -26,22 +26,23 @@
     data(){
       return {
         activeTab: localStorage.getItem('activeTab') || 0,
-        tabs: [{
-          name: 'First list'
-         }]
+        tabs: this.$store.getters.tabs
       }
+    },
+    mounted(){
+      this.$store.dispatch('fetchTabs');
     },
     computed: {
       allTabs(){
-        console.log(this.tabs.length);
         return this.tabs;
       }
     },
     methods:{
       newTab(){
-        this.tabs.push({
-          name: 'New tab'
-        })
+        this.$store.dispatch('createNewTab');
+      },
+      activateTab(tab){
+        this.activeTab = tab;
       }
     }
   }
@@ -89,7 +90,7 @@
 #tabs{
   overflow-y: scroll;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px,150px));
+  grid-template-columns: repeat(auto-fill, minmax(18vw,22vw));
   background-color: white;
   justify-items: stretch;
   justify-content: start;

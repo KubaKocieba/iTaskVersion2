@@ -256,7 +256,7 @@
     cursor: pointer;
   }
 
-    @media screen and (min-width: 1100px)
+  @media screen and (min-width: 1100px)
   {
     .addingTask{
       width: 70%;

@@ -112,8 +112,6 @@
           return this.tasksAmount-1;
         }
         else{
-
-
           return 10;
         }
       }

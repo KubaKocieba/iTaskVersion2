@@ -106,7 +106,7 @@ const mutations = {
                 tasks: [{init:true}]
               }]
             }).then(msg => {
-                store.dispatch('fetchTabs');
+                console.log('dupsko');
               }
             );
 
@@ -116,23 +116,13 @@ const mutations = {
         {
           db.get('users/' + userId + '/tabs/' + tab + '/tasks.json?auth=' + store.getters.user.idToken)
             .then(resp => {
-              //checking if has tasks - after clearing the list, the tasks object on db can be empty
-              if(resp.data){
+              let listObj = resp.data,
+                  init;
 
-                let listObj = resp.data,
-                    init;
+              ({init,...state.tasks} = listObj);
 
-                ({init,...state.tasks} = listObj);
-
-                state.loaded = true;
-                localStorage.setItem('activeTab', tab);
-              }
-              //in that case we have to create the object on next page reload
-              else{
-                db.put('users/' + userId + '/tabs/' + tab + '/tasks.json?auth=' + store.getters.user.idToken, [{init: true}]);
-                state.tasks = {};
-                state.loaded = true;
-              }
+              state.loaded = true;
+              localStorage.setItem('activeTab', tab);
             });
         }
       })
@@ -158,13 +148,11 @@ const mutations = {
 
   },
   'CLEAR_LIST'(state){
-    var userId = store.getters.user.userId;
+    state.tasks = {};
+    var userId = store.getters.user.userId,
+        taskInputs = document.getElementsByClassName('addingTask');
 
-    console.log(localStorage.getItem('activeTab'));
-
-    db.delete('users/' + userId + '/tabs/' + localStorage.getItem('activeTab') + '/tasks.json?auth=' + store.getters.user.idToken).then(resp => {
-      state.tasks = {};
-    });
+    db.delete('users/' + userId + '/tabs/' + localStorage.getItem('activeTab') + '/tasks.json?auth=' + store.getters.user.idToken);
   },
   'REMOVE_TASK'(state, id){
     let listObj = state.tasks;
@@ -206,8 +194,6 @@ const actions = {
   },
   clearList({commit}){
     commit('CLEAR_LIST');
-
-    //db.put('users/' + store.getters.user.userId + '.json?auth=' + store.getters.user.idToken, {tasks: [{init:true}]}).then(msg => console.log('success'));
   },
   removeTask({commit}, payload){
     commit('REMOVE_TASK', payload);
