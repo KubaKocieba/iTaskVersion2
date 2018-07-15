@@ -1,6 +1,6 @@
 <template>
   <div class="appTitle">
-      <h1>iTask</h1>
+      <h1>kTask</h1>
   </div>
 </template>
 

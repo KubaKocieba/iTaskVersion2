@@ -90,7 +90,7 @@
 #tabs{
   overflow-y: scroll;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18vw,22vw));
+  grid-template-columns: repeat(auto-fill, minmax(18vw,20vw));
   background-color: white;
   justify-items: stretch;
   justify-content: start;

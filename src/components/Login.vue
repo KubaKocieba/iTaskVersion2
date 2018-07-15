@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-   <span id="title"><h1>iTask</h1></span>
+   <span id="title"><h1>kTask</h1></span>
     <div id="login">
         <div><h1>Hello!</h1>
           <span class="userType" :class="{selected : returnSingUp()}" id="userTypeNew" @click="signUp = true">New user</span>
